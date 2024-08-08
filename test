@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 定義給定參數
+c1 = 0.01
+c2 = 0.02
+sigma1 = 0.019899999
+sigma2 = 0.01
+
+# 定義函數 q2_NL_star
+def q2_NL_star(gamma, c1, c2, sigma1, sigma2):
+    numerator = 2 * (1 - c2) * (1 + sigma1) - (1 - c1) * gamma
+    denominator = 4 * (1 + sigma1) * (1 + sigma2) - (3 + 2 * sigma1) * gamma ** 2
+    return numerator / denominator
+
+# 定義函數 q21
+def q21(gamma, c1, c2, sigma1, sigma2):
+    term1 = 2 * gamma * (2 * sigma1 + 3) * (-gamma * (1 - c1) + (2 - 2 * c2) * (sigma1 + 1))
+    term2 = (-gamma**2 * (2 * sigma1 + 3) + (4 * sigma1 + 4) * (sigma2 + 1))**2
+    term3 = (c1 - 1)
+    term4 = (-gamma**2 * (2 * sigma1 + 3) + (4 * sigma1 + 4) * (sigma2 + 1))
+    return term1 / term2 + term3 / term4
+
+# 定義函數 q22
+def q22(gamma, c1, c2, sigma1, sigma2):
+    common_denominator = (-gamma**2 * (2 * sigma1 + 3) + (4 * sigma1 + 4) * (sigma2 + 1))
+    term1 = common_denominator * 3/8 * gamma**2 * (2 * sigma1 + 3)**2 * (-gamma * (1 - c1) + (2 - 2 * c2) * (sigma1 + 1))
+    term2 = common_denominator * 2/4 * gamma * (c1 - 1) * (2 * sigma1 + 3)
+    term3 = common_denominator * 1/2 * (2 * sigma1 + 3) * (-gamma * (1 - c1) + (2 - 2 * c2) * (sigma1 + 1))
+    return (term1 + term2 + term3) / common_denominator
+
+# 設定 gamma 的範圍
+gamma_values = np.linspace(0.001, 0.999, 500)  # 你可以根據需要調整範圍
+
+# 計算 q2_NL_star, q21, q22 對應的值
+q2_NL_star_values = q2_NL_star(gamma_values, c1, c2, sigma1, sigma2)
+q21_values = q21(gamma_values, c1, c2, sigma1, sigma2)
+q22_values = q22(gamma_values, c1, c2, sigma1, sigma2)
+
+# 繪製曲線
+plt.figure(figsize=(10, 6))
+plt.plot(gamma_values, q2_NL_star_values, label=r"$\left( q_2^{NL} \right)^*$", color = 'red')
+plt.plot(gamma_values, q21_values, label=r"$q_{21}$", color = 'green', linestyle='--')
+plt.plot(gamma_values, q22_values, label=r"$q_{22}$", color =  'blue', linestyle='-.')
+plt.xlabel(r"$\gamma$")
+plt.ylabel(r"$\left( q_2^{NL} \right)^*$")
+plt.title(r"$\left( q_2^{NL} \right)^*$, $q_{21}$, and $q_{22}$ vs $\gamma$")
+plt.axhline(0, color='gray', linewidth=0.5)
+plt.axvline(0, color='gray', linewidth=0.5)
+plt.legend()
+plt.grid(True)
+plt.show()
